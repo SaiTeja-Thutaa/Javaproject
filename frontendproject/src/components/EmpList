@@ -1,0 +1,67 @@
+import React, { useEffect } from 'react'
+import { useState } from 'react'
+import {useTypewriter,Cursor} from 'react-simple-typewriter';
+import {Link} from 'react-router-dom';
+import EmployeeService from '../services/EmployeeService';
+
+function EmployeeListComponent() 
+{
+
+   const [text] = useTypewriter({
+    words : ["Details", "List", "Info"],
+    loop : true,
+    typeSpeed:120,
+    deleteSpeed:80
+   })  
+
+  const [employees,setEmployees]= useState([]);
+
+  useEffect(()=>{
+        EmployeeService.getAllEmployees().then(res=>{
+            setEmployees(res.data);
+        })
+  },[])
+
+  return (
+    <div className='container mt-5'>
+
+        <h4 className='text-center'> Employee {text}<Cursor/> </h4>
+
+        <div className='row mt-3'>
+        <Link to="/add-employee" className='btn btn-warning col-md-2 mb-3'> Add Employee </Link>   
+
+        <table className='table table-bordered table-striped'>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>DOJ</th>
+                    <th>Department</th>
+                    <th>Designation</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    employees.map(employee =>{
+                        return <tr key={employee.id}>
+                                    <td>{employee.id}</td>
+                                    <td>{employee.name}</td>
+                                    <td>{employee.doj}</td>
+                                    <td>{employee.dept.deptName}</td>
+                                    <td>{employee.dept.designation}</td>
+                                    <td></td>
+                                </tr>
+                    })
+                }
+            </tbody>
+        </table>
+        </div>
+    </div>
+  )
+}
+
+export default EmployeeListComponent
+
+
+
